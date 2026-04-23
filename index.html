@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Propiedad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Animaciones CSS Nativas para reemplazar Framer Motion */
+        .step-container {
+            display: none;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: all 0.3s ease-in-out;
+        }
+        .step-container.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Estilos para inputs bloqueados/errores (Programación Defensiva) */
+        .input-error { border-color: #ef4444 !important; }
+        .hidden-element { display: none !important; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-white to-gray-50 text-gray-950 min-h-screen">
+
+    <div class="px-4 py-8 min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-2xl bg-white rounded-[2rem] border border-gray-200 shadow-[0_30px_80px_rgba(15,23,42,0.08)] overflow-hidden">
+            
+            <div class="px-6 pt-6 bg-white border-b border-gray-100">
+                <div class="flex justify-between items-center gap-4 mb-5">
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-[0.25em]">Formulario</p>
+                        <h1 class="text-2xl font-semibold tracking-tight mt-2">Datos de la propiedad</h1>
+                    </div>
+                    <div class="bg-gray-950 text-white text-xs font-semibold px-4 py-2 rounded-full">
+                        <span id="current-step-display">1</span>/10
+                    </div>
+                </div>
+                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gray-950 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-3 mb-4">
+                    <span>Inicio</span>
+                    <span>Completa lo que tengas y continúa</span>
+                    <span>Final</span>
+                </div>
+            </div>
+
+            <form id="premium-form" class="p-6 md:p-7" onsubmit="event.preventDefault();">
+                
+                <div id="step-0" class="step-container active space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Antes de comenzar</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Llena la información que tengas ahora. Si un dato no está disponible, lo dejas en blanco y luego lo completas por WhatsApp.</p>
+                    </div>
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm text-gray-700 leading-6">
+                        Esta información nos ayuda a construir una landing clara, vender mejor la propiedad y evitar errores en precios, capacidad o disponibilidad.
+                    </div>
+                </div>
+
+                <div id="step-1" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Información general</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Datos básicos para identificar la propiedad y presentarla correctamente.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Nombre de la propiedad *</label>
+                            <input type="text" id="propName" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Villa Paraíso Cartagena" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Tipo de propiedad *</label>
+                            <select id="propType" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none" required>
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="casa">Casa</option>
+                                <option value="cabaña">Cabaña</option>
+                                <option value="villa">Villa</option>
+                                <option value="apartamento">Apartamento</option>
+                                <option value="finca">Finca</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Ciudad o zona *</label>
+                            <input type="text" id="propZone" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Cartagena, Zona Norte" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿La propiedad se alquila completa o por habitaciones?</label>
+                            <select id="occupancyMode" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="completa">Propiedad completa</option>
+                                <option value="habitaciones">Por habitaciones</option>
+                                <option value="ambas">Ambas opciones</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-2" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Habitaciones y Acomodación</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Indica cuántas habitaciones tiene y detalla las camas y amenidades de cada una.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-2">
+                            <label class="block text-sm font-medium text-gray-900">¿Cuántas habitaciones tiene el lugar?</label>
+                            <div class="flex items-center justify-between gap-3">
+                                <button type="button" id="btn-minus-rooms" class="w-11 h-11 flex items-center justify-center rounded-full border border-gray-300 bg-white hover:bg-gray-50 text-gray-900 transition-colors">-</button>
+                                <input type="number" id="roomCount" value="0" readonly class="flex-1 text-center text-lg font-semibold bg-gray-50 border border-gray-200 rounded-2xl py-3 focus:outline-none pointer-events-none">
+                                <button type="button" id="btn-plus-rooms" class="w-11 h-11 flex items-center justify-center rounded-full border border-gray-300 bg-white hover:bg-gray-50 text-gray-900 transition-colors">+</button>
+                            </div>
+                        </div>
+
+                        <div id="rooms-container" class="space-y-4">
+                            </div>
+                    </div>
+                </div>
+
+                <div id="step-3" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Amenidades</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Selecciona lo que sí tiene la propiedad. Puedes marcar varias opciones.</p>
+                    </div>
+                    <div id="amenities-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Piscina" class="amenity-checkbox w-5 h-5 accent-gray-950"> Piscina</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Jacuzzi" class="amenity-checkbox w-5 h-5 accent-gray-950"> Jacuzzi</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Wifi" class="amenity-checkbox w-5 h-5 accent-gray-950"> Wifi</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Internet satelital" class="amenity-checkbox w-5 h-5 accent-gray-950"> Internet satelital</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Aire acondicionado" class="amenity-checkbox w-5 h-5 accent-gray-950"> Aire acondicionado</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Parqueadero" class="amenity-checkbox w-5 h-5 accent-gray-950"> Parqueadero</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Rooftop" class="amenity-checkbox w-5 h-5 accent-gray-950"> Rooftop</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Zona BBQ" class="amenity-checkbox w-5 h-5 accent-gray-950"> Zona BBQ</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Cocina integral" class="amenity-checkbox w-5 h-5 accent-gray-950"> Cocina integral</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Cocina equipada" class="amenity-checkbox w-5 h-5 accent-gray-950"> Cocina equipada</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Televisor" class="amenity-checkbox w-5 h-5 accent-gray-950"> Televisor</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Netflix" class="amenity-checkbox w-5 h-5 accent-gray-950"> Netflix</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Sonido profesional" class="amenity-checkbox w-5 h-5 accent-gray-950"> Sonido profesional</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Mascotas permitidas" class="amenity-checkbox w-5 h-5 accent-gray-950"> Mascotas permitidas</label>
+                    </div>
+                </div>
+
+                <div id="step-4" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Piscina</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Si la propiedad tiene piscina, completa las condiciones de uso.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿La propiedad tiene piscina?</label>
+                            <select id="hasPool" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div id="pool-details" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Dimensiones de la piscina</label>
+                                <input type="text" id="poolDimensions" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 12 m x 5 m x 1.6 m">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Horario de uso de la piscina</label>
+                                <input type="text" id="poolHours" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 8:00 a. m. a 9:00 p. m.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">¿Tiene alguna restricción?</label>
+                                <select id="poolHasRestrictions" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="si">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <div id="pool-restriction-desc" class="hidden-element">
+                                <label class="block text-sm font-medium text-gray-900">Describe la restricción</label>
+                                <textarea id="poolRestrictionsText" class="w-full mt-2 min-h-[110px] p-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: No se permite vidrio dentro de la piscina"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-5" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Sonido y música</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Aclara si hay sonido incluido, si se puede llevar sonido propio y si existen horarios o restricciones.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿La propiedad cuenta con bocinas o sonido profesional?</label>
+                            <select id="hasSoundSystem" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿Se permite llevar sonido o cabina musical propia?</label>
+                            <select id="guestSoundAllowed" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                                <option value="con_condiciones">Con condiciones</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿La música tiene horario o restricción?</label>
+                            <select id="musicAllowed" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="sin_restriccion">Sin restricción</option>
+                                <option value="moderada">Debe ser moderada</option>
+                                <option value="con_horario">Tiene horario específico</option>
+                            </select>
+                        </div>
+                        <div id="music-condition-desc" class="hidden-element">
+                            <label class="block text-sm font-medium text-gray-900">Especifica la condición o el horario</label>
+                            <textarea id="musicConditionText" class="w-full mt-2 min-h-[110px] p-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Música permitida hasta las 10:00 p. m."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-6" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Mascotas y operación</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Define si aceptas mascotas, horarios y tipo de gestión del alojamiento.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿Se permiten mascotas?</label>
+                            <select id="hasPets" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                                <option value="con_condiciones">Con condiciones</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿El check-in y check-out son fijos o flexibles?</label>
+                            <select id="flexibility" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="fijos">Fijos</option>
+                                <option value="flexibles">Flexibles</option>
+                                <option value="mixtos">Mixtos / depende del caso</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿La propiedad se alquila a un solo grupo por reserva?</label>
+                            <select id="singleGroup" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí, un solo grupo</option>
+                                <option value="no">No, se dividen grupos</option>
+                                <option value="depende">Depende del caso</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-7" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Precios y reservas</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Aquí definimos el valor real para evitar confusiones con temporada y número de personas.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Capacidad máxima del lugar</label>
+                            <input type="text" id="maxCapacity" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 8 personas">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿Cuál es el valor mínimo por noche?</label>
+                            <input type="text" id="minPrice" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿El precio cambia según la temporada?</label>
+                            <select id="priceMode" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="no">No cambia</option>
+                                <option value="si">Sí, por temporada</option>
+                                <option value="mixto">Sí, y también por fechas especiales</option>
+                            </select>
+                        </div>
+                        <div id="seasonal-prices" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Temporada baja</label>
+                                <input type="text" id="lowSeason" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Temporada media</label>
+                                <input type="text" id="midSeason" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: $ 2.000.000 - $ 2.200.000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Temporada alta</label>
+                                <input type="text" id="highSeason" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: $ 2.500.000 - $ 3.500.000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Valor por persona adicional</label>
+                                <input type="text" id="extraPerson" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Tipo de anticipo o depósito para reservar</label>
+                                <select id="depositType" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="porcentaje">Porcentaje (%)</option>
+                                    <option value="fijo">Precio Fijo ($)</option>
+                                </select>
+                            </div>
+                            <div id="depositPercentContainer" class="hidden-element">
+                                <label class="block text-sm font-medium text-gray-900">Indica el porcentaje (%)</label>
+                                <input type="number" id="depositPercent" min="0" max="100" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 50">
+                            </div>
+                            <div id="depositFixedContainer" class="hidden-element">
+                                <label class="block text-sm font-medium text-gray-900">Indica el valor fijo ($)</label>
+                                <input type="text" id="depositFixed" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-8" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Políticas y Servicios</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Dale seguridad a tu huésped mostrando reglas claras y ofrécele servicios extra.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Si el huésped cancela, ¿qué pasa con el anticipo?</label>
+                            <select id="cancellationPolicy" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="estricta">Estricta: No hay devoluciones</option>
+                                <option value="moderada">Moderada: Se retiene un porcentaje</option>
+                                <option value="flexible">Flexible: Devolución si cancela con tiempo</option>
+                            </select>
+                        </div>
+                        <div id="cancellationDaysContainer" class="hidden-element">
+                            <label class="block text-sm font-medium text-gray-900">¿Con cuántos días de anticipación debe cancelar para el reembolso?</label>
+                            <input type="number" id="cancellationDays" min="0" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 15">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿Cobras un depósito de seguridad (Fianza) por posibles daños?</label>
+                            <select id="damageDeposit" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="no">No cobro depósito</option>
+                                <option value="si">Sí, un valor fijo</option>
+                            </select>
+                        </div>
+                        <div id="depositAmountContainer" class="hidden-element">
+                            <label class="block text-sm font-medium text-gray-900">Valor del depósito de seguridad</label>
+                            <input type="text" id="damageDepositAmount" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Penalidad si el huésped incumple las reglas de la casa:</label>
+                            <select id="penaltyPolicy" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="desalojo">Cancelación sin reembolso y desalojo</option>
+                                <option value="multa">Multa descontada del depósito</option>
+                                <option value="ninguna">Sin política estricta</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿Tu negocio cuenta con pasarela de pago (Ej: Wompi, ePayco, Stripe)?</label>
+                            <select id="paymentGateway" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí, tengo pasarela</option>
+                                <option value="no">No, solo transferencia directa</option>
+                            </select>
+                        </div>
+
+                        <div class="pt-2 border-t border-gray-100">
+                            <label class="block text-sm font-medium text-gray-900">¿Ofreces servicios extra (Transporte, tours, cocinera)?</label>
+                            <select id="hasExtraServices" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí, ofrezco servicios extra</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div id="extraServicesContainer" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                            <label class="block text-sm font-medium text-gray-900">Agrega tus servicios uno por uno</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="serviceInput" class="flex-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Transporte aeropuerto - 80.000 COP">
+                                <button type="button" id="btnAddService" class="px-5 bg-gray-950 text-white rounded-xl hover:bg-gray-800 font-medium transition-colors">Agregar</button>
+                            </div>
+                            <ul id="servicesList" class="space-y-2 mt-2">
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-9" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Plataformas y contacto</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Comparte los enlaces oficiales. Los datos de contacto son indispensables para poder registrar la propiedad.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Enlace de Airbnb</label>
+                            <input type="url" id="linkAirbnb" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Pega aquí el enlace">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Enlace de Booking</label>
+                            <input type="url" id="linkBooking" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Pega aquí el enlace">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Enlace de Google Maps o ficha</label>
+                            <input type="url" id="linkMaps" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Pega aquí el enlace">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Instagram</label>
+                            <input type="url" id="linkInstagram" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="https://instagram.com/tupropiedad">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Facebook</label>
+                            <input type="url" id="linkFacebook" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="https://facebook.com/tupropiedad">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">WhatsApp principal *</label>
+                            <input type="text" id="linkWhatsApp" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: +57 300 000 0000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Correo de reservas *</label>
+                            <input type="email" id="linkEmail" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: reservas@email.com" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-4 bg-white flex flex-col sm:flex-row items-center justify-between gap-3 sticky bottom-0 z-50">
+                    <button type="button" id="btn-prev" class="hidden-element w-full sm:w-auto h-12 px-6 rounded-2xl border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 transition-colors font-medium order-2 sm:order-1">Atrás</button>
+                    
+                    <div id="nav-spacer" class="hidden sm:block flex-1 order-none"></div>
+                    
+                    <button type="button" id="btn-next" class="w-full sm:w-auto min-w-[140px] h-12 px-8 rounded-2xl bg-gray-950 text-white hover:bg-gray-800 transition-colors font-medium shadow-sm order-1 sm:order-2">Comenzar</button>
+                    
+                    <button type="submit" id="btn-submit" class="hidden-element w-full sm:w-auto min-w-[180px] h-12 px-8 rounded-2xl bg-gray-950 text-white hover:bg-gray-800 transition-colors font-medium shadow-sm flex items-center justify-center order-1 sm:order-2">
+                        <span id="submit-text">Enviar información</span>
+                    </button>
+                </div>
+
+            </form>
+            <div id="success-screen" class="hidden-element p-8 sm:p-12 text-center space-y-6">
+                <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-4xl mb-6 shadow-sm">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">¡Información enviada con éxito!</h2>
+                <p class="text-gray-600 leading-relaxed max-w-md mx-auto">
+                    Hemos recibido los datos de tu propiedad correctamente y ya están asegurados en nuestro sistema.
+                </p>
+                <div class="bg-gray-50 border border-gray-200 p-5 rounded-2xl max-w-md mx-auto text-sm text-gray-700">
+                    <strong class="text-gray-900 block mb-1">¿Necesitas hacer una corrección?</strong>
+                    Si olvidaste algún detalle o necesitas cambiar un precio, por favor escríbenos directamente por WhatsApp para actualizar tu perfil.
+                </div>
+                <div class="pt-6">
+                    <button type="button" id="btn-new-property" class="h-12 px-8 rounded-2xl bg-gray-950 text-white hover:bg-gray-800 transition-colors font-semibold shadow-sm w-full sm:w-auto">
+                        Registrar otra propiedad
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="app-logic">
+        // 1. ESTADOS GLOBALES
+        const totalSteps = 10;
+        let currentStep = 0;
+        let extraServicesArray = [];
+        let formStatus = 'draft'; // Nuevo estado para controlar si ya se envió
+        const AUTOSAVE_KEY = 'premiumForm_AutoSave_Draft';
+
+        const formElement = document.getElementById('premium-form');
+        const successScreen = document.getElementById('success-screen');
+        const steps = document.querySelectorAll('.step-container');
+        const btnNext = document.getElementById('btn-next');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnSubmit = document.getElementById('btn-submit');
+        const progressBar = document.getElementById('progress-bar');
+        const stepDisplay = document.getElementById('current-step-display');
+        const navSpacer = document.getElementById('nav-spacer');
+
+        // ==========================================
+        // OPTIMIZACIONES UX MÓVIL
+        // ==========================================
+        document.querySelectorAll('.format-currency, input[type="number"]').forEach(input => {
+            input.setAttribute('inputmode', 'numeric');
+        });
+
+        // ==========================================
+        // SISTEMA DE AUTOGUARDADO
+        // ==========================================
+        function autoSave() {
+            const roomsData = Array.from(document.querySelectorAll('.room-card')).map(card => ({
+                room: card.dataset.room,
+                doubleBeds: card.querySelector('.bed-double').value,
+                singleBeds: card.querySelector('.bed-single').value,
+                bunkBeds: card.querySelector('.bed-bunk').value,
+                hasBathroom: card.querySelector('.room-bath').checked,
+                hasAC: card.querySelector('.room-ac').checked,
+                hasTV: card.querySelector('.room-tv').checked
+            }));
+
+            const dataToSave = {
+                step: currentStep,
+                status: formStatus, // Guardamos si está en borrador o ya se envió
+                inputs: {},
+                amenities: Array.from(document.querySelectorAll('.amenity-checkbox:checked')).map(cb => cb.value),
+                services: extraServicesArray,
+                rooms: roomsData
+            };
+
+            document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
+                if(el.id && !el.closest('.room-card')) {
+                    dataToSave.inputs[el.id] = el.value;
+                    if(el.dataset.rawValue !== undefined) dataToSave.inputs[el.id + '_raw'] = el.dataset.rawValue;
+                }
+            });
+
+            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(dataToSave));
+        }
+
+        function autoLoad() {
+            const savedDraft = localStorage.getItem(AUTOSAVE_KEY);
+            if(!savedDraft) return false;
+
+            try {
+                const data = JSON.parse(savedDraft);
+                
+                for(const id in data.inputs) {
+                    if(!id.endsWith('_raw')) {
+                        const el = document.getElementById(id);
+                        if(el) {
+                            el.value = data.inputs[id];
+                            if(data.inputs[id + '_raw'] !== undefined) el.dataset.rawValue = data.inputs[id + '_raw'];
+                            el.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }
+                }
+
+                document.querySelectorAll('.amenity-checkbox').forEach(cb => {
+                    cb.checked = data.amenities.includes(cb.value);
+                });
+
+                if(data.services) {
+                    extraServicesArray = data.services;
+                    renderServices();
+                }
+
+                if(data.rooms && data.rooms.length > 0) {
+                    const roomCountEl = document.getElementById('roomCount');
+                    roomCountEl.value = data.rooms.length;
+                    syncRoomCards();
+
+                    const cards = document.querySelectorAll('.room-card');
+                    data.rooms.forEach((rData, index) => {
+                        if(cards[index]) {
+                            cards[index].querySelector('.bed-double').value = rData.doubleBeds || '';
+                            cards[index].querySelector('.bed-single').value = rData.singleBeds || '';
+                            cards[index].querySelector('.bed-bunk').value = rData.bunkBeds || '';
+                            cards[index].querySelector('.room-bath').checked = rData.hasBathroom || false;
+                            cards[index].querySelector('.room-ac').checked = rData.hasAC || false;
+                            cards[index].querySelector('.room-tv').checked = rData.hasTV || false;
+                        }
+                    });
+                }
+
+                currentStep = data.step || 0;
+                formStatus = data.status || 'draft';
+
+                return true;
+            } catch(e) {
+                console.error("Error cargando guardado", e);
+                return false;
+            }
+        }
+
+        formElement.addEventListener('input', autoSave);
+        formElement.addEventListener('change', autoSave);
+
+        // ==========================================
+        // VISTAS: FORMULARIO VS ÉXITO
+        // ==========================================
+        function showSuccessScreen() {
+            formElement.classList.add('hidden-element');
+            successScreen.classList.remove('hidden-element');
+            // Cambiar visualmente el header a un estado neutral
+            document.querySelector('.w-full.h-2.bg-gray-100').classList.add('hidden-element');
+            stepDisplay.parentElement.classList.add('hidden-element');
+        }
+
+        function showFormScreen() {
+            successScreen.classList.add('hidden-element');
+            formElement.classList.remove('hidden-element');
+            document.querySelector('.w-full.h-2.bg-gray-100').classList.remove('hidden-element');
+            stepDisplay.parentElement.classList.remove('hidden-element');
+            updateUI();
+        }
+
+        document.getElementById('btn-new-property').addEventListener('click', () => {
+            // Borramos la memoria caché y recargamos para dejar el formulario en blanco
+            localStorage.removeItem(AUTOSAVE_KEY);
+            window.location.reload();
+        });
+
+        // 2. RENDERIZADO Y VALIDACIÓN
+        function updateUI() {
+            steps.forEach((step, index) => {
+                if (index === currentStep) step.classList.add('active');
+                else step.classList.remove('active');
+            });
+
+            progressBar.style.width = `${(currentStep / (totalSteps - 1)) * 100}%`;
+            stepDisplay.textContent = currentStep + 1;
+
+            if (currentStep === 0) {
+                btnPrev.classList.add('hidden-element');
+                navSpacer.classList.remove('hidden-element');
+                btnNext.textContent = 'Comenzar';
+            } else {
+                btnPrev.classList.remove('hidden-element');
+                navSpacer.classList.add('hidden-element');
+                btnNext.textContent = 'Siguiente';
+            }
+
+            if (currentStep === totalSteps - 1) {
+                btnNext.classList.add('hidden-element');
+                btnSubmit.classList.remove('hidden-element');
+            } else {
+                btnNext.classList.remove('hidden-element');
+                btnSubmit.classList.add('hidden-element');
+            }
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 0) return true; 
+            const currentStepEl = steps[currentStep];
+            const requiredInputs = currentStepEl.querySelectorAll('[required]');
+            let isValid = true;
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('input-error');
+                    isValid = false;
+                } else {
+                    input.classList.remove('input-error');
+                }
+            });
+            return isValid;
+        }
+
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.hasAttribute('required') && input.value.trim() !== '') {
+                    input.classList.remove('input-error');
+                }
+            });
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (validateCurrentStep()) {
+                if (currentStep < totalSteps - 1) {
+                    currentStep++;
+                    updateUI();
+                    autoSave();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } else {
+                const firstError = steps[currentStep].querySelector('.input-error');
+                if(firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            }
+        });
+
+        btnPrev.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateUI();
+                autoSave();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // 3. LÓGICA DE HABITACIONES DINÁMICAS
+        const roomCountInput = document.getElementById('roomCount');
+        const roomsContainer = document.getElementById('rooms-container');
+
+        function syncRoomCards() {
+            const count = parseInt(roomCountInput.value) || 0;
+            const currentCards = roomsContainer.children.length;
+
+            if (count > currentCards) {
+                for (let i = currentCards + 1; i <= count; i++) {
+                    const card = document.createElement('div');
+                    card.className = "bg-gray-100/50 border border-gray-200 rounded-3xl p-5 space-y-4 room-card";
+                    card.dataset.room = i;
+                    card.innerHTML = `
+                        <h3 class="font-semibold text-gray-900 border-b border-gray-200 pb-2">Habitación ${i}</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500">Camas Dobles</label>
+                                <input type="number" inputmode="numeric" min="0" class="w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 focus:ring-2 focus:ring-gray-950 outline-none bed-double" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500">Camas Sencillas</label>
+                                <input type="number" inputmode="numeric" min="0" class="w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 focus:ring-2 focus:ring-gray-950 outline-none bed-single" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500">Literas (Camarotes)</label>
+                                <input type="number" inputmode="numeric" min="0" class="w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 focus:ring-2 focus:ring-gray-950 outline-none bed-bunk" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+                            <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" class="w-5 h-5 accent-gray-950 room-bath"> Baño privado</label>
+                            <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" class="w-5 h-5 accent-gray-950 room-ac"> Aire acond.</label>
+                            <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" class="w-5 h-5 accent-gray-950 room-tv"> Televisor</label>
+                        </div>
+                    `;
+                    roomsContainer.appendChild(card);
+                }
+            } else if (count < currentCards) {
+                for (let i = currentCards; i > count; i--) {
+                    roomsContainer.removeChild(roomsContainer.lastChild);
+                }
+            }
+        }
+
+        document.getElementById('btn-plus-rooms').addEventListener('click', () => {
+            let val = parseInt(roomCountInput.value);
+            if(val < 20) { roomCountInput.value = val + 1; syncRoomCards(); autoSave(); }
+        });
+        document.getElementById('btn-minus-rooms').addEventListener('click', () => {
+            let val = parseInt(roomCountInput.value);
+            if(val > 0) { roomCountInput.value = val - 1; syncRoomCards(); autoSave(); }
+        });
+
+        // 4. FORMATEO DE MONEDA EN TIEMPO REAL
+        function formatCurrency(value) {
+            let onlyNumbers = value.replace(/\D/g, '');
+            if (onlyNumbers === '') return '';
+            return '$ ' + new Intl.NumberFormat('es-CO').format(parseInt(onlyNumbers));
+        }
+
+        document.body.addEventListener('input', function(e) {
+            if(e.target.classList.contains('format-currency')) {
+                e.target.dataset.rawValue = e.target.value.replace(/\D/g, ''); 
+                e.target.value = formatCurrency(e.target.value);
+                autoSave();
+            }
+        });
+
+        // 5. LÓGICAS CONDICIONALES
+        const hasPoolSelect = document.getElementById('hasPool');
+        const poolDetails = document.getElementById('pool-details');
+        const poolHasRestrictions = document.getElementById('poolHasRestrictions');
+        const poolRestrictionDesc = document.getElementById('pool-restriction-desc');
+        if(hasPoolSelect) hasPoolSelect.addEventListener('change', (e) => e.target.value === 'si' ? poolDetails.classList.remove('hidden-element') : poolDetails.classList.add('hidden-element'));
+        if(poolHasRestrictions) poolHasRestrictions.addEventListener('change', (e) => e.target.value === 'si' ? poolRestrictionDesc.classList.remove('hidden-element') : poolRestrictionDesc.classList.add('hidden-element'));
+
+        const guestSoundAllowed = document.getElementById('guestSoundAllowed');
+        const musicAllowed = document.getElementById('musicAllowed');
+        const musicConditionDesc = document.getElementById('music-condition-desc');
+        function checkMusicConditions() {
+            if (guestSoundAllowed && musicAllowed) {
+                (guestSoundAllowed.value === 'con_condiciones' || musicAllowed.value === 'con_horario') ? musicConditionDesc.classList.remove('hidden-element') : musicConditionDesc.classList.add('hidden-element');
+            }
+        }
+        if(guestSoundAllowed) guestSoundAllowed.addEventListener('change', checkMusicConditions);
+        if(musicAllowed) musicAllowed.addEventListener('change', checkMusicConditions);
+
+        const priceMode = document.getElementById('priceMode');
+        const seasonalPrices = document.getElementById('seasonal-prices');
+        if(priceMode) priceMode.addEventListener('change', (e) => (e.target.value === 'si' || e.target.value === 'mixto') ? seasonalPrices.classList.remove('hidden-element') : seasonalPrices.classList.add('hidden-element'));
+
+        const depositType = document.getElementById('depositType');
+        const depositPercentContainer = document.getElementById('depositPercentContainer');
+        const depositFixedContainer = document.getElementById('depositFixedContainer');
+        if(depositType) {
+            depositType.addEventListener('change', (e) => {
+                if(e.target.value === 'porcentaje') {
+                    depositPercentContainer.classList.remove('hidden-element');
+                    depositFixedContainer.classList.add('hidden-element');
+                    document.getElementById('depositFixed').value = '';
+                } else if(e.target.value === 'fijo') {
+                    depositFixedContainer.classList.remove('hidden-element');
+                    depositPercentContainer.classList.add('hidden-element');
+                    document.getElementById('depositPercent').value = '';
+                }
+            });
+        }
+
+        // 6. LÓGICA DEL PASO 8 (Políticas y Servicios)
+        const cancellationPolicy = document.getElementById('cancellationPolicy');
+        const cancellationDaysContainer = document.getElementById('cancellationDaysContainer');
+        if(cancellationPolicy) {
+            cancellationPolicy.addEventListener('change', (e) => {
+                if(e.target.value === 'flexible') cancellationDaysContainer.classList.remove('hidden-element');
+                else { cancellationDaysContainer.classList.add('hidden-element'); document.getElementById('cancellationDays').value = ''; }
+            });
+        }
+
+        const damageDeposit = document.getElementById('damageDeposit');
+        const depositAmountContainer = document.getElementById('depositAmountContainer');
+        if(damageDeposit) {
+            damageDeposit.addEventListener('change', (e) => {
+                if(e.target.value === 'si') depositAmountContainer.classList.remove('hidden-element');
+                else { depositAmountContainer.classList.add('hidden-element'); document.getElementById('damageDepositAmount').value = ''; }
+            });
+        }
+
+        const hasExtraServices = document.getElementById('hasExtraServices');
+        const extraServicesContainer = document.getElementById('extraServicesContainer');
+        if(hasExtraServices) {
+            hasExtraServices.addEventListener('change', (e) => {
+                if(e.target.value === 'si') extraServicesContainer.classList.remove('hidden-element');
+                else { extraServicesContainer.classList.add('hidden-element'); extraServicesArray = []; renderServices(); }
+            });
+        }
+
+        const btnAddService = document.getElementById('btnAddService');
+        const serviceInput = document.getElementById('serviceInput');
+        const servicesList = document.getElementById('servicesList');
+
+        if(btnAddService) {
+            btnAddService.addEventListener('click', () => {
+                const val = serviceInput.value.trim();
+                if(val !== '') {
+                    extraServicesArray.push(val);
+                    serviceInput.value = '';
+                    renderServices();
+                    autoSave();
+                }
+            });
+        }
+
+        function renderServices() {
+            servicesList.innerHTML = '';
+            extraServicesArray.forEach((srv, index) => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center bg-white border border-gray-200 p-3 rounded-xl text-sm';
+                li.innerHTML = `<span>${srv}</span> <button type="button" class="text-red-500 hover:text-red-700 font-bold px-2 py-1" onclick="removeService(${index})">X</button>`;
+                servicesList.appendChild(li);
+            });
+        }
+
+        window.removeService = function(index) {
+            extraServicesArray.splice(index, 1);
+            renderServices();
+            autoSave();
+        }
+
+        // 7. RECOLECCIÓN Y WEBHOOK
+        formElement.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!validateCurrentStep()) { 
+                const firstError = steps[currentStep].querySelector('.input-error');
+                if(firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+                return; 
+            }
+
+            if(serviceInput && serviceInput.value.trim() !== '') {
+                extraServicesArray.push(serviceInput.value.trim());
+                serviceInput.value = '';
+                renderServices();
+            }
+
+            const amenities = Array.from(document.querySelectorAll('.amenity-checkbox:checked')).map(cb => cb.value);
+
+            const roomsData = Array.from(document.querySelectorAll('.room-card')).map(card => ({
+                room: card.dataset.room,
+                doubleBeds: card.querySelector('.bed-double').value || 0,
+                singleBeds: card.querySelector('.bed-single').value || 0,
+                bunkBeds: card.querySelector('.bed-bunk').value || 0,
+                hasBathroom: card.querySelector('.room-bath').checked,
+                hasAC: card.querySelector('.room-ac').checked,
+                hasTV: card.querySelector('.room-tv').checked
+            }));
+
+            // ==========================================
+            // TRADUCTOR DE TEXTO HERMOSO PARA NOTION
+            // ==========================================
+            const roomsTextFormatted = roomsData.map(r => {
+                let extras = [];
+                if(r.hasBathroom) extras.push("Baño");
+                if(r.hasAC) extras.push("Aire Acond.");
+                if(r.hasTV) extras.push("TV");
+                
+                let extrasText = extras.length > 0 ? extras.join(", ") : "Sin extras";
+                return `Hab. ${r.room}: ${r.doubleBeds} Doble(s) | ${r.singleBeds} Sencilla(s) | ${r.bunkBeds} Litera(s) -> [${extrasText}]`;
+            }).join("\n");
+
+            const extraServicesText = extraServicesArray.length > 0 
+                ? "• " + extraServicesArray.join("\n• ") 
+                : "Sin servicios extra";
+            // ==========================================
+
+            // Super Objeto Final (UNIFICADO)
+            const formData = {
+                propName: document.getElementById('propName')?.value || '',
+                propType: document.getElementById('propType')?.value || '',
+                propZone: document.getElementById('propZone')?.value || '',
+                occupancyMode: document.getElementById('occupancyMode')?.value || '',
+                
+                roomsTotal: document.getElementById('roomCount')?.value || 0,
+                roomsDetail: roomsTextFormatted, // <-- Texto hermoso
+                amenities: amenities,
+                
+                hasPool: document.getElementById('hasPool')?.value || '',
+                poolDimensions: document.getElementById('poolDimensions')?.value || '',
+                poolHours: document.getElementById('poolHours')?.value || '',
+                poolHasRestrictions: document.getElementById('poolHasRestrictions')?.value || '',
+                poolRestrictionsText: document.getElementById('poolRestrictionsText')?.value || '',
+                
+                hasSoundSystem: document.getElementById('hasSoundSystem')?.value || '',
+                guestSoundAllowed: document.getElementById('guestSoundAllowed')?.value || '',
+                musicAllowed: document.getElementById('musicAllowed')?.value || '',
+                musicConditionText: document.getElementById('musicConditionText')?.value || '',
+                
+                hasPets: document.getElementById('hasPets')?.value || '',
+                flexibility: document.getElementById('flexibility')?.value || '',
+                singleGroup: document.getElementById('singleGroup')?.value || '',
+                
+                maxCapacity: document.getElementById('maxCapacity')?.value || '',
+                minPrice: document.getElementById('minPrice')?.dataset.rawValue || '',
+                priceMode: document.getElementById('priceMode')?.value || '',
+                lowSeason: document.getElementById('lowSeason')?.dataset.rawValue || '',
+                midSeason: document.getElementById('midSeason')?.dataset.rawValue || '',
+                highSeason: document.getElementById('highSeason')?.dataset.rawValue || '',
+                extraPerson: document.getElementById('extraPerson')?.dataset.rawValue || '',
+                
+                depositType: document.getElementById('depositType')?.value || '',
+                depositPercent: document.getElementById('depositPercent')?.value || '',
+                depositFixed: document.getElementById('depositFixed')?.dataset.rawValue || '',
+
+                cancellationPolicy: document.getElementById('cancellationPolicy')?.value || '',
+                cancellationDays: document.getElementById('cancellationDays')?.value || '',
+                damageDeposit: document.getElementById('damageDeposit')?.value || '',
+                damageDepositAmount: document.getElementById('damageDepositAmount')?.dataset.rawValue || '',
+                penaltyPolicy: document.getElementById('penaltyPolicy')?.value || '',
+                paymentGateway: document.getElementById('paymentGateway')?.value || '',
+                extraServices: extraServicesText, // <-- Servicios con viñetas
+                
+                linkAirbnb: document.getElementById('linkAirbnb')?.value || '',
+                linkBooking: document.getElementById('linkBooking')?.value || '',
+                linkMaps: document.getElementById('linkMaps')?.value || '',
+                linkInstagram: document.getElementById('linkInstagram')?.value || '',
+                linkFacebook: document.getElementById('linkFacebook')?.value || '',
+                linkWhatsApp: document.getElementById('linkWhatsApp')?.value || '',
+                linkEmail: document.getElementById('linkEmail')?.value || '',
+                
+                timestamp: new Date().toISOString()
+            };
+
+            const submitBtnText = document.getElementById('submit-text');
+            btnSubmit.disabled = true;
+            submitBtnText.textContent = 'Enviando...';
+            btnSubmit.classList.add('opacity-70', 'cursor-wait');
+
+            // URL DE TU WEBHOOK (Intacta)
+            const WEBHOOK_URL = "https://hook.us2.make.com/ufnc6b642wqkdbmmrjnov83m5jhzemvl"; 
+
+            try {
+                if(WEBHOOK_URL === "") {
+                    console.log("DATOS FINALES:", formData);
+                    formStatus = 'submitted';
+                    autoSave();
+                    showSuccessScreen();
+                    
+                    submitBtnText.textContent = 'Enviar información';
+                    btnSubmit.disabled = false;
+                    btnSubmit.classList.remove('opacity-70', 'cursor-wait');
+                    return;
+                }
+
+                const response = await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+                if(response.ok) {
+                    formStatus = 'submitted';
+                    autoSave();
+                    showSuccessScreen();
+                    window.scrollTo(0,0);
+                } else throw new Error("Rechazado");
+            } catch (error) {
+                console.error(error); alert("Error de conexión al enviar.");
+            } finally {
+                submitBtnText.textContent = 'Enviar información'; 
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-70', 'cursor-wait');
+            }
+        });
+
+        // 8. INICIALIZACIÓN
+        const hasSavedData = autoLoad();
+        
+        if (!hasSavedData) {
+            syncRoomCards();
+            updateUI();
+        } else {
+            if(formStatus === 'submitted') {
+                showSuccessScreen();
+            } else {
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
