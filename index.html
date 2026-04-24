@@ -23,42 +23,64 @@
         /* Estilos para inputs bloqueados/errores (Programación Defensiva) */
         .input-error { border-color: #ef4444 !important; }
         .hidden-element { display: none !important; }
+
+        /* Efecto de Destello Premium para Botones */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-white to-gray-50 text-gray-950 min-h-screen">
 
     <div class="px-4 py-8 min-h-screen flex items-center justify-center">
-        <div class="w-full max-w-2xl bg-white rounded-[2rem] border border-gray-200 shadow-[0_30px_80px_rgba(15,23,42,0.08)] overflow-hidden">
-            
-            <div class="px-6 pt-6 bg-white border-b border-gray-100">
-                <div class="flex justify-between items-center gap-4 mb-5">
-                    <div>
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-[0.25em]">Formulario</p>
-                        <h1 class="text-2xl font-semibold tracking-tight mt-2">Datos de la propiedad</h1>
+        <div class="w-full max-w-2xl p-[1.5px] rounded-[2rem] bg-gradient-to-br from-gray-300 via-gray-50 to-gray-300 shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
+            <div class="bg-white rounded-[calc(2rem-1.5px)] overflow-hidden h-full w-full">
+                
+                <div class="px-6 pt-6 bg-white border-b border-gray-100">
+                    <div class="flex justify-between items-center gap-4 mb-5">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase tracking-[0.25em]">Formulario</p>
+                            <h1 class="text-2xl font-semibold tracking-tight mt-2">Datos de la propiedad</h1>
+                        </div>
+                        <div class="bg-gray-950 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-sm">
+                            <span id="current-step-display">1</span>/10
+                        </div>
                     </div>
-                    <div class="bg-gray-950 text-white text-xs font-semibold px-4 py-2 rounded-full">
-                        <span id="current-step-display">1</span>/10
+                    <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-full bg-gray-950 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-3 mb-4 font-medium">
+                        <span>Inicio</span>
+                        <span>Final</span>
                     </div>
                 </div>
-                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="h-full bg-gray-950 rounded-full transition-all duration-300" style="width: 0%;"></div>
-                </div>
-                <div class="flex justify-between text-xs text-gray-500 mt-3 mb-4">
-                    <span>Inicio</span>
-                    <span>Completa lo que tengas y continúa</span>
-                    <span>Final</span>
-                </div>
-            </div>
 
             <form id="premium-form" class="p-6 md:p-7" onsubmit="event.preventDefault();">
                 
                 <div id="step-0" class="step-container active space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
                     <div>
-                        <h2 class="text-xl font-semibold tracking-tight">Antes de comenzar</h2>
-                        <p class="text-sm text-gray-500 leading-6 mt-1">Llena la información que tengas ahora. Si un dato no está disponible, lo dejas en blanco y luego lo completas por WhatsApp.</p>
+                        <h2 class="text-xl font-semibold tracking-tight">Bienvenido al registro de propiedad</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Por favor, completa la información solicitada con la mayor precisión posible. Si desconoces algún dato en este momento, puedes omitirlo y suministrarlo posteriormente a través de nuestro soporte por WhatsApp.</p>
                     </div>
                     <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm text-gray-700 leading-6">
-                        Esta información nos ayuda a construir una landing clara, vender mejor la propiedad y evitar errores en precios, capacidad o disponibilidad.
+                        Los datos proporcionados son fundamentales para diseñar una página de aterrizaje (Landing Page) optimizada, maximizar la conversión de reservas y garantizar la exactitud en tarifas, disponibilidad y capacidad de tu alojamiento.
                     </div>
                 </div>
 
@@ -433,7 +455,7 @@
                     
                     <div id="nav-spacer" class="hidden sm:block flex-1 order-none"></div>
                     
-                    <button type="button" id="btn-next" class="w-full sm:w-auto min-w-[140px] h-12 px-8 rounded-2xl bg-gray-950 text-white hover:bg-gray-800 transition-colors font-medium shadow-sm order-1 sm:order-2">Comenzar</button>
+                    <button type="button" id="btn-next" class="btn-shine w-full sm:w-auto min-w-[140px] h-12 px-8 rounded-2xl bg-gray-950 text-white hover:bg-gray-800 transition-colors font-medium shadow-sm order-1 sm:order-2">Comenzar</button>
                     
                     <button type="submit" id="btn-submit" class="hidden-element w-full sm:w-auto min-w-[180px] h-12 px-8 rounded-2xl bg-gray-950 text-white hover:bg-gray-800 transition-colors font-medium shadow-sm flex items-center justify-center order-1 sm:order-2">
                         <span id="submit-text">Enviar información</span>
