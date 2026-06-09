@@ -12,7 +12,10 @@
 
     <div class="px-4 py-8 min-h-screen flex items-center justify-center">
         <div class="w-full max-w-2xl p-[1.5px] rounded-[2rem] bg-gradient-to-br from-gray-300 via-gray-50 to-gray-300 shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
-            <div class="bg-white rounded-[calc(2rem-1.5px)] overflow-hidden h-full w-full">
+            <div class="bg-white rounded-[calc(2rem-1.5px)] overflow-hidden h-full w-full flex flex-col">
+                <div class="brand-header-banner">
+                    <img src="img/logo.png" alt="Palacio 360">
+                </div>
                 
                 <div class="px-6 pt-6 bg-white border-b border-gray-100">
                     <div class="flex justify-between items-center gap-4 mb-5">
@@ -35,13 +38,18 @@
 
             <form id="premium-form" class="p-6 md:p-7" onsubmit="event.preventDefault();">
                 
-                <div id="step-0" class="step-container active space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
-                    <div>
-                        <h2 class="text-xl font-semibold tracking-tight">Bienvenido al registro de propiedad</h2>
-                        <p class="text-sm text-gray-500 leading-6 mt-1">Por favor, completa la información solicitada con la mayor precisión posible. Si desconoces algún dato en este momento, puedes omitirlo y suministrarlo posteriormente a través de nuestro soporte por WhatsApp.</p>
+                <div id="step-0" class="step-container active space-y-5 bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
+                    <div class="space-y-2">
+                        <h2 class="text-2xl font-bold tracking-tight text-gray-900">¡Comencemos a crear tu Landing Page!</h2>
+                        <p class="text-sm text-gray-500 leading-relaxed">
+                            Completa este breve formulario para personalizar tu página web de reservas, optimizar tus tarifas y maximizar la ocupación de tu alojamiento. 🚀
+                        </p>
                     </div>
-                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm text-gray-700 leading-6">
-                        Los datos proporcionados son fundamentales para diseñar una página de aterrizaje (Landing Page) optimizada, maximizar la conversión de reservas y garantizar la exactitud en tarifas, disponibilidad y capacidad de tu alojamiento.
+                    <div class="brand-alert flex items-start gap-3">
+                        <span class="text-lg leading-none">💡</span>
+                        <p>
+                            <strong>¿No tienes algún dato a la mano?</strong> No te preocupes, puedes omitirlo por ahora y completarlo después con nuestro soporte por WhatsApp.
+                        </p>
                     </div>
                 </div>
 

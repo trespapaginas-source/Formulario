@@ -1,4 +1,40 @@
-body { font-family: 'Inter', sans-serif; }
+:root {
+    --brand-yellow: #FCBC07;
+    --brand-black: #0F0F0F;
+    --brand-black-hover: #222222;
+    --brand-yellow-light: #FFF9E6;
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+}
+
+/* Cabecera Premium de Marca */
+.brand-header-banner {
+    background-color: var(--brand-yellow);
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.brand-header-banner img {
+    height: 5rem; /* 80px */
+    object-fit: contain;
+}
+
+/* Alerta Premium en Pantalla de Bienvenida */
+.brand-alert {
+    background-color: var(--brand-yellow-light);
+    border: 1px solid rgba(252, 188, 7, 0.25);
+    border-radius: 1.25rem;
+    padding: 1.25rem;
+    font-size: 0.875rem;
+    color: #4a3e1a; /* Contraste y legibilidad mejorados */
+    line-height: 1.6;
+}
+
 /* Animaciones CSS Nativas para reemplazar Framer Motion */
 .step-container {
     display: none;
@@ -11,9 +47,44 @@ body { font-family: 'Inter', sans-serif; }
     opacity: 1;
     transform: translateY(0);
 }
+
 /* Estilos para inputs de error */
 .input-error { border-color: #ef4444 !important; }
 .hidden-element { display: none !important; }
+
+/* Sobrescribir Clases de Color de Tailwind con la Identidad de Marca */
+.bg-gray-950 {
+    background-color: var(--brand-black) !important;
+}
+
+.hover\:bg-gray-800:hover {
+    background-color: var(--brand-black-hover) !important;
+}
+
+/* Foco y Acento en Inputs con Amarillo Palacio */
+input:focus, select:focus, textarea:focus {
+    border-color: var(--brand-yellow) !important;
+    --tw-ring-color: var(--brand-yellow) !important;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000) !important;
+}
+
+.focus\:ring-gray-950:focus {
+    --tw-ring-color: var(--brand-yellow) !important;
+}
+
+.accent-gray-950 {
+    accent-color: var(--brand-yellow) !important;
+}
+
+/* Sobrescribir Checks dinámicos */
+input[type="checkbox"]:checked, input[type="radio"]:checked {
+    accent-color: var(--brand-yellow) !important;
+}
+
+/* Barra de progreso en Amarillo de la Marca */
+#progress-bar {
+    background-color: var(--brand-yellow) !important;
+}
 
 /* Efecto de Destello Premium para Botones */
 .btn-shine {
@@ -35,4 +106,9 @@ body { font-family: 'Inter', sans-serif; }
     0% { left: -100%; }
     20% { left: 200%; }
     100% { left: 200%; }
+}
+
+/* Hover de botón interactivo */
+.btn-shine:hover {
+    box-shadow: 0 0 14px rgba(252, 188, 7, 0.35);
 }
