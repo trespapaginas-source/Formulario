@@ -6,46 +6,7 @@
     <title>Formulario de Propiedad</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Animaciones CSS Nativas para reemplazar Framer Motion */
-        .step-container {
-            display: none;
-            opacity: 0;
-            transform: translateY(18px);
-            transition: all 0.3s ease-in-out;
-        }
-        .step-container.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* Estilos para inputs bloqueados/errores (Programación Defensiva) */
-        .input-error { border-color: #ef4444 !important; }
-        .hidden-element { display: none !important; }
-
-        /* Efecto de Destello Premium para Botones */
-        .btn-shine {
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-shine::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            animation: shine 3s infinite;
-        }
-        @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 200%; }
-            100% { left: 200%; }
-        }
-    </style>
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 <body class="bg-gradient-to-b from-white to-gray-50 text-gray-950 min-h-screen">
 
@@ -60,7 +21,7 @@
                             <h1 class="text-2xl font-semibold tracking-tight mt-2">Datos de la propiedad</h1>
                         </div>
                         <div class="bg-gray-950 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-sm">
-                            <span id="current-step-display">1</span>/10
+                            <span id="current-step-display">1</span>/<span id="total-steps-display">10</span>
                         </div>
                     </div>
                     <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -119,6 +80,23 @@
                                 <option value="ambas">Ambas opciones</option>
                             </select>
                         </div>
+                        <div class="space-y-2 pt-2 border-t border-gray-100">
+                            <label class="block text-sm font-medium text-gray-900">¿Qué servicios ofrece tu propiedad? (Puedes marcar varios) *</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <input type="checkbox" id="offerAloj" value="alojamiento" checked class="service-checkbox w-5 h-5 accent-gray-950">
+                                    Alojamiento
+                                </label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <input type="checkbox" id="offerPasadia" value="pasadia" class="service-checkbox w-5 h-5 accent-gray-950">
+                                    Pasadía
+                                </label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <input type="checkbox" id="offerEventos" value="eventos" class="service-checkbox w-5 h-5 accent-gray-950">
+                                    Eventos
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -139,6 +117,66 @@
 
                         <div id="rooms-container" class="space-y-4">
                             </div>
+
+                        <!-- Lógica Financiera y Capacidad de Alojamiento -->
+                        <div class="mt-6 pt-6 border-t border-gray-100 space-y-4">
+                            <h3 class="font-semibold text-gray-950 text-sm">Capacidad y Precios de Alojamiento</h3>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Capacidad máxima de alojamiento *</label>
+                                <input type="text" id="maxCapacity" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 8 personas">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">¿Cómo se calculan las tarifas de alojamiento? *</label>
+                                <select id="alojPricingType" class="pricing-type-select w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="fijo">Precio Fijo (No cambia según el número de personas)</option>
+                                    <option value="variable">Precio Variable (Cambia según la cantidad de personas)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Contenedor Fijo Alojamiento -->
+                            <div id="fixed-aloj-pricing-container" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500">Entre semana (Lunes a Jueves) *</label>
+                                        <input type="text" id="fixedAlojWeekday" class="format-currency w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500">Fin de semana y festivos (Viernes a Domingo) *</label>
+                                        <input type="text" id="fixedAlojWeekend" class="format-currency w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contenedor Variable Alojamiento -->
+                            <div id="variable-aloj-pricing-container" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-semibold text-gray-900 text-sm">Rangos de precios (Alojamiento)</h4>
+                                    <button type="button" id="btn-add-aloj-range" class="px-4 py-2 bg-gray-950 text-white rounded-xl hover:bg-gray-800 text-xs font-medium transition-colors">+ Agregar Rango</button>
+                                </div>
+                                <div id="variable-aloj-ranges-container" class="space-y-4"></div>
+                            </div>
+
+                            <!-- Anticipo Alojamiento -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900">Tipo de anticipo o depósito para reservar alojamiento</label>
+                                    <select id="alojDepositType" class="deposit-type-select w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                        <option value="" disabled selected>Selecciona una opción</option>
+                                        <option value="porcentaje">Porcentaje (%)</option>
+                                        <option value="fijo">Precio Fijo ($)</option>
+                                    </select>
+                                </div>
+                                <div id="alojDepositPercentContainer" class="hidden-element">
+                                    <label class="block text-sm font-medium text-gray-900">Indica el porcentaje (%) *</label>
+                                    <input type="number" id="alojDepositPercent" min="0" max="100" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 50">
+                                </div>
+                                <div id="alojDepositFixedContainer" class="hidden-element">
+                                    <label class="block text-sm font-medium text-gray-900">Indica el valor fijo ($) *</label>
+                                    <input type="text" id="alojDepositFixed" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -153,7 +191,7 @@
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Wifi" class="amenity-checkbox w-5 h-5 accent-gray-950"> Wifi</label>
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Internet satelital" class="amenity-checkbox w-5 h-5 accent-gray-950"> Internet satelital</label>
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Aire acondicionado" class="amenity-checkbox w-5 h-5 accent-gray-950"> Aire acondicionado</label>
-                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Parqueadero" class="amenity-checkbox w-5 h-5 accent-gray-950"> Parqueadero</label>
+                        <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" id="amenity-parking" value="Parqueadero" class="amenity-checkbox w-5 h-5 accent-gray-950"> Parqueadero</label>
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Rooftop" class="amenity-checkbox w-5 h-5 accent-gray-950"> Rooftop</label>
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Zona BBQ" class="amenity-checkbox w-5 h-5 accent-gray-950"> Zona BBQ</label>
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Cocina integral" class="amenity-checkbox w-5 h-5 accent-gray-950"> Cocina integral</label>
@@ -162,6 +200,22 @@
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Netflix" class="amenity-checkbox w-5 h-5 accent-gray-950"> Netflix</label>
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Sonido profesional" class="amenity-checkbox w-5 h-5 accent-gray-950"> Sonido profesional</label>
                         <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Mascotas permitidas" class="amenity-checkbox w-5 h-5 accent-gray-950"> Mascotas permitidas</label>
+                    </div>
+                    
+                    <div id="parking-capacity-container" class="hidden-element bg-gray-50 border border-gray-200 rounded-2xl p-4 mt-3">
+                        <label class="block text-sm font-medium text-gray-900">¿Cuántos vehículos caben en el parqueadero? *</label>
+                        <input type="number" id="parkingCapacity" min="0" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 5 vehículos">
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-100 space-y-3">
+                        <label class="block text-sm font-medium text-gray-900">¿Alguna otra amenidad que no esté en la lista?</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="customAmenityInput" class="flex-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Mesa de billar, Sendero ecológico">
+                            <button type="button" id="btnAddCustomAmenity" class="px-5 bg-gray-950 text-white rounded-xl hover:bg-gray-800 font-medium transition-colors">Agregar</button>
+                        </div>
+                        <div id="custom-amenities-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+                            <!-- Custom checkbox elements will be appended here -->
+                        </div>
                     </div>
                 </div>
 
@@ -279,68 +333,188 @@
                     </div>
                 </div>
 
-                <div id="step-7" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                <div id="step-pasadia" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
                     <div>
-                        <h2 class="text-xl font-semibold tracking-tight">Precios y reservas</h2>
-                        <p class="text-sm text-gray-500 leading-6 mt-1">Aquí definimos el valor real para evitar confusiones con temporada y número de personas.</p>
+                        <h2 class="text-xl font-semibold tracking-tight">Detalles de Pasadía</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Define las condiciones y servicios incluidos para los pasadías (visitas de un día sin hospedaje).</p>
                     </div>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-900">Capacidad máxima del lugar</label>
-                            <input type="text" id="maxCapacity" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 8 personas">
+                            <label class="block text-sm font-medium text-gray-900">Capacidad máxima de pasadía (personas) *</label>
+                            <input type="number" id="maxCapacityPasadia" min="1" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 30 personas">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900">¿Cuál es el valor mínimo por noche?</label>
-                            <input type="text" id="minPrice" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900">¿El precio cambia según la temporada?</label>
-                            <select id="priceMode" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
-                                <option value="" disabled selected>Selecciona una opción</option>
-                                <option value="no">No cambia</option>
-                                <option value="si">Sí, por temporada</option>
-                                <option value="mixto">Sí, y también por fechas especiales</option>
-                            </select>
-                        </div>
-                        <div id="seasonal-prices" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900">Temporada baja</label>
-                                <input type="text" id="lowSeason" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900">Temporada media</label>
-                                <input type="text" id="midSeason" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: $ 2.000.000 - $ 2.200.000">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900">Temporada alta</label>
-                                <input type="text" id="highSeason" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: $ 2.500.000 - $ 3.500.000">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900">Valor por persona adicional</label>
-                                <input type="text" id="extraPerson" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                        
+                        <div class="space-y-3">
+                            <label class="block text-sm font-medium text-gray-900">¿Qué incluye el pasadía? (Selecciona todas las opciones que apliquen)</label>
+                            <div id="pasadia-includes-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Piscina" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Piscina</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Almuerzo" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Almuerzo</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Zonas verdes" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Zonas verdes</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Senderismo" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Senderismo</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Kayak" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Kayak</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Acceso al lago" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Acceso al lago</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Jacuzzi" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Jacuzzi</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Parqueadero" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Parqueadero</label>
+                                <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-2xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" value="Wifi" class="pasadia-include-checkbox w-5 h-5 accent-gray-950"> Wifi</label>
                             </div>
                         </div>
                         
-                        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 space-y-4">
+                        <div class="mt-4 pt-4 border-t border-gray-100 space-y-3">
+                            <label class="block text-sm font-medium text-gray-900">¿Incluye algo más? Escríbelo aquí:</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="customPasadiaInput" class="flex-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Bebida de bienvenida, Cancha de tenis">
+                                <button type="button" id="btnAddCustomPasadia" class="px-5 bg-gray-950 text-white rounded-xl hover:bg-gray-800 font-medium transition-colors">Agregar</button>
+                            </div>
+                            <div id="custom-pasadia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+                                <!-- Custom pasadia checkboxes -->
+                            </div>
+                        </div>
+
+                        <!-- Lógica Financiera Pasadía -->
+                        <div class="mt-6 pt-6 border-t border-gray-100 space-y-4">
+                            <h3 class="font-semibold text-gray-955 text-sm">Precios de Pasadía</h3>
                             <div>
-                                <label class="block text-sm font-medium text-gray-900">Tipo de anticipo o depósito para reservar</label>
-                                <select id="depositType" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <label class="block text-sm font-medium text-gray-900">¿Cómo se calculan las tarifas de pasadía? *</label>
+                                <select id="pasadiaPricingType" class="pricing-type-select w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
                                     <option value="" disabled selected>Selecciona una opción</option>
-                                    <option value="porcentaje">Porcentaje (%)</option>
-                                    <option value="fijo">Precio Fijo ($)</option>
+                                    <option value="fijo">Precio Fijo (No cambia según el número de personas)</option>
+                                    <option value="variable">Precio Variable (Cambia según la cantidad de personas)</option>
                                 </select>
                             </div>
-                            <div id="depositPercentContainer" class="hidden-element">
-                                <label class="block text-sm font-medium text-gray-900">Indica el porcentaje (%)</label>
-                                <input type="number" id="depositPercent" min="0" max="100" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 50">
+                            
+                            <!-- Contenedor Fijo Pasadía -->
+                            <div id="fixed-pasadia-pricing-container" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500">Entre semana (Lunes a Jueves) *</label>
+                                        <input type="text" id="fixedPasadiaWeekday" class="format-currency w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500">Fin de semana y festivos (Viernes a Domingo) *</label>
+                                        <input type="text" id="fixedPasadiaWeekend" class="format-currency w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                    </div>
+                                </div>
                             </div>
-                            <div id="depositFixedContainer" class="hidden-element">
-                                <label class="block text-sm font-medium text-gray-900">Indica el valor fijo ($)</label>
-                                <input type="text" id="depositFixed" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                            
+                            <!-- Contenedor Variable Pasadía -->
+                            <div id="variable-pasadia-pricing-container" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-semibold text-gray-900 text-sm">Rangos de precios (Pasadía)</h4>
+                                    <button type="button" id="btn-add-pasadia-range" class="px-4 py-2 bg-gray-950 text-white rounded-xl hover:bg-gray-800 text-xs font-medium transition-colors">+ Agregar Rango</button>
+                                </div>
+                                <div id="variable-pasadia-ranges-container" class="space-y-4"></div>
+                            </div>
+
+                            <!-- Anticipo Pasadía -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900">Tipo de anticipo o depósito para reservar pasadía</label>
+                                    <select id="pasadiaDepositType" class="deposit-type-select w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                        <option value="" disabled selected>Selecciona una opción</option>
+                                        <option value="porcentaje">Porcentaje (%)</option>
+                                        <option value="fijo">Precio Fijo ($)</option>
+                                    </select>
+                                </div>
+                                <div id="pasadiaDepositPercentContainer" class="hidden-element">
+                                    <label class="block text-sm font-medium text-gray-900">Indica el porcentaje (%) *</label>
+                                    <input type="number" id="pasadiaDepositPercent" min="0" max="100" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 50">
+                                </div>
+                                <div id="pasadiaDepositFixedContainer" class="hidden-element">
+                                    <label class="block text-sm font-medium text-gray-900">Indica el valor fijo ($) *</label>
+                                    <input type="text" id="pasadiaDepositFixed" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div id="step-eventos" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Detalles de Eventos</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Indica la capacidad y las características permitidas para la organización de eventos.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Número máximo de invitados *</label>
+                            <input type="number" id="maxCapacityEventos" min="1" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 100 invitados">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿Qué tipo de eventos se permiten? (Bodas, Fiestas corporativas, etc.)</label>
+                            <input type="text" id="eventTypes" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Bodas, reuniones corporativas, almuerzos familiares">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">¿La propiedad ofrece mobiliario para eventos? (Mesas, sillas, sonido)</label>
+                            <select id="eventFurniture" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="si">Sí, incluye mobiliario completo</option>
+                                <option value="parcial">Sí, mobiliario parcial</option>
+                                <option value="no">No, el cliente debe traer su mobiliario</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900">Especifica restricciones para eventos (Ej: música hasta las 2:00 AM, sin pólvora)</label>
+                            <textarea id="eventRestrictions" class="w-full mt-2 min-h-[110px] p-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: Música permitida hasta la 1:00 AM, prohibido globos de helio y pólvora."></textarea>
+                        </div>
+
+                        <!-- Lógica Financiera Eventos -->
+                        <div class="mt-6 pt-6 border-t border-gray-100 space-y-4">
+                            <h3 class="font-semibold text-gray-955 text-sm">Precios de Eventos</h3>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">¿Cómo se calculan las tarifas de eventos? *</label>
+                                <select id="eventosPricingType" class="pricing-type-select w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="fijo">Precio Fijo (No cambia según el número de personas)</option>
+                                    <option value="variable">Precio Variable (Cambia según la cantidad de personas)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Contenedor Fijo Eventos -->
+                            <div id="fixed-eventos-pricing-container" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500">Entre semana (Lunes a Jueves) *</label>
+                                        <input type="text" id="fixedEventosWeekday" class="format-currency w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-500">Fin de semana y festivos (Viernes a Domingo) *</label>
+                                        <input type="text" id="fixedEventosWeekend" class="format-currency w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contenedor Variable Eventos -->
+                            <div id="variable-eventos-pricing-container" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-semibold text-gray-900 text-sm">Rangos de precios (Eventos)</h4>
+                                    <button type="button" id="btn-add-eventos-range" class="px-4 py-2 bg-gray-950 text-white rounded-xl hover:bg-gray-800 text-xs font-medium transition-colors">+ Agregar Rango</button>
+                                </div>
+                                <div id="variable-eventos-ranges-container" class="space-y-4"></div>
+                            </div>
+
+                            <!-- Anticipo Eventos -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-900">Tipo de anticipo o depósito para reservar eventos</label>
+                                    <select id="eventosDepositType" class="deposit-type-select w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-950 appearance-none">
+                                        <option value="" disabled selected>Selecciona una opción</option>
+                                        <option value="porcentaje">Porcentaje (%)</option>
+                                        <option value="fijo">Precio Fijo ($)</option>
+                                    </select>
+                                </div>
+                                <div id="eventosDepositPercentContainer" class="hidden-element">
+                                    <label class="block text-sm font-medium text-gray-900">Indica el porcentaje (%) *</label>
+                                    <input type="number" id="eventosDepositPercent" min="0" max="100" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: 50">
+                                </div>
+                                <div id="eventosDepositFixedContainer" class="hidden-element">
+                                    <label class="block text-sm font-medium text-gray-900">Indica el valor fijo ($) *</label>
+                                    <input type="text" id="eventosDepositFixed" class="format-currency w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="$ 0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
 
                 <div id="step-8" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
                     <div>
@@ -484,549 +658,10 @@
         </div>
     </div>
 
-    <script id="app-logic">
-        // 1. ESTADOS GLOBALES
-        const totalSteps = 10;
-        let currentStep = 0;
-        let extraServicesArray = [];
-        let formStatus = 'draft'; // Nuevo estado para controlar si ya se envió
-        const AUTOSAVE_KEY = 'premiumForm_AutoSave_Draft';
-
-        const formElement = document.getElementById('premium-form');
-        const successScreen = document.getElementById('success-screen');
-        const steps = document.querySelectorAll('.step-container');
-        const btnNext = document.getElementById('btn-next');
-        const btnPrev = document.getElementById('btn-prev');
-        const btnSubmit = document.getElementById('btn-submit');
-        const progressBar = document.getElementById('progress-bar');
-        const stepDisplay = document.getElementById('current-step-display');
-        const navSpacer = document.getElementById('nav-spacer');
-
-        // ==========================================
-        // OPTIMIZACIONES UX MÓVIL
-        // ==========================================
-        document.querySelectorAll('.format-currency, input[type="number"]').forEach(input => {
-            input.setAttribute('inputmode', 'numeric');
-        });
-
-        // ==========================================
-        // SISTEMA DE AUTOGUARDADO
-        // ==========================================
-        function autoSave() {
-            const roomsData = Array.from(document.querySelectorAll('.room-card')).map(card => ({
-                room: card.dataset.room,
-                doubleBeds: card.querySelector('.bed-double').value,
-                singleBeds: card.querySelector('.bed-single').value,
-                bunkBeds: card.querySelector('.bed-bunk').value,
-                hasBathroom: card.querySelector('.room-bath').checked,
-                hasAC: card.querySelector('.room-ac').checked,
-                hasTV: card.querySelector('.room-tv').checked
-            }));
-
-            const dataToSave = {
-                step: currentStep,
-                status: formStatus, // Guardamos si está en borrador o ya se envió
-                inputs: {},
-                amenities: Array.from(document.querySelectorAll('.amenity-checkbox:checked')).map(cb => cb.value),
-                services: extraServicesArray,
-                rooms: roomsData
-            };
-
-            document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
-                if(el.id && !el.closest('.room-card')) {
-                    dataToSave.inputs[el.id] = el.value;
-                    if(el.dataset.rawValue !== undefined) dataToSave.inputs[el.id + '_raw'] = el.dataset.rawValue;
-                }
-            });
-
-            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(dataToSave));
-        }
-
-        function autoLoad() {
-            const savedDraft = localStorage.getItem(AUTOSAVE_KEY);
-            if(!savedDraft) return false;
-
-            try {
-                const data = JSON.parse(savedDraft);
-                
-                for(const id in data.inputs) {
-                    if(!id.endsWith('_raw')) {
-                        const el = document.getElementById(id);
-                        if(el) {
-                            el.value = data.inputs[id];
-                            if(data.inputs[id + '_raw'] !== undefined) el.dataset.rawValue = data.inputs[id + '_raw'];
-                            el.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                    }
-                }
-
-                document.querySelectorAll('.amenity-checkbox').forEach(cb => {
-                    cb.checked = data.amenities.includes(cb.value);
-                });
-
-                if(data.services) {
-                    extraServicesArray = data.services;
-                    renderServices();
-                }
-
-                if(data.rooms && data.rooms.length > 0) {
-                    const roomCountEl = document.getElementById('roomCount');
-                    roomCountEl.value = data.rooms.length;
-                    syncRoomCards();
-
-                    const cards = document.querySelectorAll('.room-card');
-                    data.rooms.forEach((rData, index) => {
-                        if(cards[index]) {
-                            cards[index].querySelector('.bed-double').value = rData.doubleBeds || '';
-                            cards[index].querySelector('.bed-single').value = rData.singleBeds || '';
-                            cards[index].querySelector('.bed-bunk').value = rData.bunkBeds || '';
-                            cards[index].querySelector('.room-bath').checked = rData.hasBathroom || false;
-                            cards[index].querySelector('.room-ac').checked = rData.hasAC || false;
-                            cards[index].querySelector('.room-tv').checked = rData.hasTV || false;
-                        }
-                    });
-                }
-
-                currentStep = data.step || 0;
-                formStatus = data.status || 'draft';
-
-                return true;
-            } catch(e) {
-                console.error("Error cargando guardado", e);
-                return false;
-            }
-        }
-
-        formElement.addEventListener('input', autoSave);
-        formElement.addEventListener('change', autoSave);
-
-        // ==========================================
-        // VISTAS: FORMULARIO VS ÉXITO
-        // ==========================================
-        function showSuccessScreen() {
-            formElement.classList.add('hidden-element');
-            successScreen.classList.remove('hidden-element');
-            // Cambiar visualmente el header a un estado neutral
-            document.querySelector('.w-full.h-2.bg-gray-100').classList.add('hidden-element');
-            stepDisplay.parentElement.classList.add('hidden-element');
-        }
-
-        function showFormScreen() {
-            successScreen.classList.add('hidden-element');
-            formElement.classList.remove('hidden-element');
-            document.querySelector('.w-full.h-2.bg-gray-100').classList.remove('hidden-element');
-            stepDisplay.parentElement.classList.remove('hidden-element');
-            updateUI();
-        }
-
-        document.getElementById('btn-new-property').addEventListener('click', () => {
-            // Borramos la memoria caché y recargamos para dejar el formulario en blanco
-            localStorage.removeItem(AUTOSAVE_KEY);
-            window.location.reload();
-        });
-
-        // 2. RENDERIZADO Y VALIDACIÓN
-        function updateUI() {
-            steps.forEach((step, index) => {
-                if (index === currentStep) step.classList.add('active');
-                else step.classList.remove('active');
-            });
-
-            progressBar.style.width = `${(currentStep / (totalSteps - 1)) * 100}%`;
-            stepDisplay.textContent = currentStep + 1;
-
-            if (currentStep === 0) {
-                btnPrev.classList.add('hidden-element');
-                navSpacer.classList.remove('hidden-element');
-                btnNext.textContent = 'Comenzar';
-            } else {
-                btnPrev.classList.remove('hidden-element');
-                navSpacer.classList.add('hidden-element');
-                btnNext.textContent = 'Siguiente';
-            }
-
-            if (currentStep === totalSteps - 1) {
-                btnNext.classList.add('hidden-element');
-                btnSubmit.classList.remove('hidden-element');
-            } else {
-                btnNext.classList.remove('hidden-element');
-                btnSubmit.classList.add('hidden-element');
-            }
-        }
-
-        function validateCurrentStep() {
-            if (currentStep === 0) return true; 
-            const currentStepEl = steps[currentStep];
-            const requiredInputs = currentStepEl.querySelectorAll('[required]');
-            let isValid = true;
-            requiredInputs.forEach(input => {
-                if (!input.value.trim()) {
-                    input.classList.add('input-error');
-                    isValid = false;
-                } else {
-                    input.classList.remove('input-error');
-                }
-            });
-            return isValid;
-        }
-
-        document.querySelectorAll('input, select').forEach(input => {
-            input.addEventListener('input', () => {
-                if (input.hasAttribute('required') && input.value.trim() !== '') {
-                    input.classList.remove('input-error');
-                }
-            });
-        });
-
-        btnNext.addEventListener('click', () => {
-            if (validateCurrentStep()) {
-                if (currentStep < totalSteps - 1) {
-                    currentStep++;
-                    updateUI();
-                    autoSave();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            } else {
-                const firstError = steps[currentStep].querySelector('.input-error');
-                if(firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    firstError.focus();
-                }
-            }
-        });
-
-        btnPrev.addEventListener('click', () => {
-            if (currentStep > 0) {
-                currentStep--;
-                updateUI();
-                autoSave();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
-
-        // 3. LÓGICA DE HABITACIONES DINÁMICAS
-        const roomCountInput = document.getElementById('roomCount');
-        const roomsContainer = document.getElementById('rooms-container');
-
-        function syncRoomCards() {
-            const count = parseInt(roomCountInput.value) || 0;
-            const currentCards = roomsContainer.children.length;
-
-            if (count > currentCards) {
-                for (let i = currentCards + 1; i <= count; i++) {
-                    const card = document.createElement('div');
-                    card.className = "bg-gray-100/50 border border-gray-200 rounded-3xl p-5 space-y-4 room-card";
-                    card.dataset.room = i;
-                    card.innerHTML = `
-                        <h3 class="font-semibold text-gray-900 border-b border-gray-200 pb-2">Habitación ${i}</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500">Camas Dobles</label>
-                                <input type="number" inputmode="numeric" min="0" class="w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 focus:ring-2 focus:ring-gray-950 outline-none bed-double" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500">Camas Sencillas</label>
-                                <input type="number" inputmode="numeric" min="0" class="w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 focus:ring-2 focus:ring-gray-950 outline-none bed-single" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500">Literas (Camarotes)</label>
-                                <input type="number" inputmode="numeric" min="0" class="w-full mt-1 h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-950 focus:ring-2 focus:ring-gray-950 outline-none bed-bunk" placeholder="0">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
-                            <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" class="w-5 h-5 accent-gray-950 room-bath"> Baño privado</label>
-                            <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" class="w-5 h-5 accent-gray-950 room-ac"> Aire acond.</label>
-                            <label class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-3 rounded-xl text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input type="checkbox" class="w-5 h-5 accent-gray-950 room-tv"> Televisor</label>
-                        </div>
-                    `;
-                    roomsContainer.appendChild(card);
-                }
-            } else if (count < currentCards) {
-                for (let i = currentCards; i > count; i--) {
-                    roomsContainer.removeChild(roomsContainer.lastChild);
-                }
-            }
-        }
-
-        document.getElementById('btn-plus-rooms').addEventListener('click', () => {
-            let val = parseInt(roomCountInput.value);
-            if(val < 20) { roomCountInput.value = val + 1; syncRoomCards(); autoSave(); }
-        });
-        document.getElementById('btn-minus-rooms').addEventListener('click', () => {
-            let val = parseInt(roomCountInput.value);
-            if(val > 0) { roomCountInput.value = val - 1; syncRoomCards(); autoSave(); }
-        });
-
-        // 4. FORMATEO DE MONEDA EN TIEMPO REAL
-        function formatCurrency(value) {
-            let onlyNumbers = value.replace(/\D/g, '');
-            if (onlyNumbers === '') return '';
-            return '$ ' + new Intl.NumberFormat('es-CO').format(parseInt(onlyNumbers));
-        }
-
-        document.body.addEventListener('input', function(e) {
-            if(e.target.classList.contains('format-currency')) {
-                e.target.dataset.rawValue = e.target.value.replace(/\D/g, ''); 
-                e.target.value = formatCurrency(e.target.value);
-                autoSave();
-            }
-        });
-
-        // 5. LÓGICAS CONDICIONALES
-        const hasPoolSelect = document.getElementById('hasPool');
-        const poolDetails = document.getElementById('pool-details');
-        const poolHasRestrictions = document.getElementById('poolHasRestrictions');
-        const poolRestrictionDesc = document.getElementById('pool-restriction-desc');
-        if(hasPoolSelect) hasPoolSelect.addEventListener('change', (e) => e.target.value === 'si' ? poolDetails.classList.remove('hidden-element') : poolDetails.classList.add('hidden-element'));
-        if(poolHasRestrictions) poolHasRestrictions.addEventListener('change', (e) => e.target.value === 'si' ? poolRestrictionDesc.classList.remove('hidden-element') : poolRestrictionDesc.classList.add('hidden-element'));
-
-        const guestSoundAllowed = document.getElementById('guestSoundAllowed');
-        const musicAllowed = document.getElementById('musicAllowed');
-        const musicConditionDesc = document.getElementById('music-condition-desc');
-        function checkMusicConditions() {
-            if (guestSoundAllowed && musicAllowed) {
-                (guestSoundAllowed.value === 'con_condiciones' || musicAllowed.value === 'con_horario') ? musicConditionDesc.classList.remove('hidden-element') : musicConditionDesc.classList.add('hidden-element');
-            }
-        }
-        if(guestSoundAllowed) guestSoundAllowed.addEventListener('change', checkMusicConditions);
-        if(musicAllowed) musicAllowed.addEventListener('change', checkMusicConditions);
-
-        const priceMode = document.getElementById('priceMode');
-        const seasonalPrices = document.getElementById('seasonal-prices');
-        if(priceMode) priceMode.addEventListener('change', (e) => (e.target.value === 'si' || e.target.value === 'mixto') ? seasonalPrices.classList.remove('hidden-element') : seasonalPrices.classList.add('hidden-element'));
-
-        const depositType = document.getElementById('depositType');
-        const depositPercentContainer = document.getElementById('depositPercentContainer');
-        const depositFixedContainer = document.getElementById('depositFixedContainer');
-        if(depositType) {
-            depositType.addEventListener('change', (e) => {
-                if(e.target.value === 'porcentaje') {
-                    depositPercentContainer.classList.remove('hidden-element');
-                    depositFixedContainer.classList.add('hidden-element');
-                    document.getElementById('depositFixed').value = '';
-                } else if(e.target.value === 'fijo') {
-                    depositFixedContainer.classList.remove('hidden-element');
-                    depositPercentContainer.classList.add('hidden-element');
-                    document.getElementById('depositPercent').value = '';
-                }
-            });
-        }
-
-        // 6. LÓGICA DEL PASO 8 (Políticas y Servicios)
-        const cancellationPolicy = document.getElementById('cancellationPolicy');
-        const cancellationDaysContainer = document.getElementById('cancellationDaysContainer');
-        if(cancellationPolicy) {
-            cancellationPolicy.addEventListener('change', (e) => {
-                if(e.target.value === 'flexible') cancellationDaysContainer.classList.remove('hidden-element');
-                else { cancellationDaysContainer.classList.add('hidden-element'); document.getElementById('cancellationDays').value = ''; }
-            });
-        }
-
-        const damageDeposit = document.getElementById('damageDeposit');
-        const depositAmountContainer = document.getElementById('depositAmountContainer');
-        if(damageDeposit) {
-            damageDeposit.addEventListener('change', (e) => {
-                if(e.target.value === 'si') depositAmountContainer.classList.remove('hidden-element');
-                else { depositAmountContainer.classList.add('hidden-element'); document.getElementById('damageDepositAmount').value = ''; }
-            });
-        }
-
-        const hasExtraServices = document.getElementById('hasExtraServices');
-        const extraServicesContainer = document.getElementById('extraServicesContainer');
-        if(hasExtraServices) {
-            hasExtraServices.addEventListener('change', (e) => {
-                if(e.target.value === 'si') extraServicesContainer.classList.remove('hidden-element');
-                else { extraServicesContainer.classList.add('hidden-element'); extraServicesArray = []; renderServices(); }
-            });
-        }
-
-        const btnAddService = document.getElementById('btnAddService');
-        const serviceInput = document.getElementById('serviceInput');
-        const servicesList = document.getElementById('servicesList');
-
-        if(btnAddService) {
-            btnAddService.addEventListener('click', () => {
-                const val = serviceInput.value.trim();
-                if(val !== '') {
-                    extraServicesArray.push(val);
-                    serviceInput.value = '';
-                    renderServices();
-                    autoSave();
-                }
-            });
-        }
-
-        function renderServices() {
-            servicesList.innerHTML = '';
-            extraServicesArray.forEach((srv, index) => {
-                const li = document.createElement('li');
-                li.className = 'flex justify-between items-center bg-white border border-gray-200 p-3 rounded-xl text-sm';
-                li.innerHTML = `<span>${srv}</span> <button type="button" class="text-red-500 hover:text-red-700 font-bold px-2 py-1" onclick="removeService(${index})">X</button>`;
-                servicesList.appendChild(li);
-            });
-        }
-
-        window.removeService = function(index) {
-            extraServicesArray.splice(index, 1);
-            renderServices();
-            autoSave();
-        }
-
-        // 7. RECOLECCIÓN Y WEBHOOK
-        formElement.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!validateCurrentStep()) { 
-                const firstError = steps[currentStep].querySelector('.input-error');
-                if(firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    firstError.focus();
-                }
-                return; 
-            }
-
-            if(serviceInput && serviceInput.value.trim() !== '') {
-                extraServicesArray.push(serviceInput.value.trim());
-                serviceInput.value = '';
-                renderServices();
-            }
-
-            const amenities = Array.from(document.querySelectorAll('.amenity-checkbox:checked')).map(cb => cb.value);
-
-            const roomsData = Array.from(document.querySelectorAll('.room-card')).map(card => ({
-                room: card.dataset.room,
-                doubleBeds: card.querySelector('.bed-double').value || 0,
-                singleBeds: card.querySelector('.bed-single').value || 0,
-                bunkBeds: card.querySelector('.bed-bunk').value || 0,
-                hasBathroom: card.querySelector('.room-bath').checked,
-                hasAC: card.querySelector('.room-ac').checked,
-                hasTV: card.querySelector('.room-tv').checked
-            }));
-
-            // ==========================================
-            // TRADUCTOR DE TEXTO HERMOSO PARA NOTION
-            // ==========================================
-            const roomsTextFormatted = roomsData.map(r => {
-                let extras = [];
-                if(r.hasBathroom) extras.push("Baño");
-                if(r.hasAC) extras.push("Aire Acond.");
-                if(r.hasTV) extras.push("TV");
-                
-                let extrasText = extras.length > 0 ? extras.join(", ") : "Sin extras";
-                return `Hab. ${r.room}: ${r.doubleBeds} Doble(s) | ${r.singleBeds} Sencilla(s) | ${r.bunkBeds} Litera(s) -> [${extrasText}]`;
-            }).join("\n");
-
-            const extraServicesText = extraServicesArray.length > 0 
-                ? "• " + extraServicesArray.join("\n• ") 
-                : "Sin servicios extra";
-            // ==========================================
-
-            // Super Objeto Final (UNIFICADO)
-            const formData = {
-                propName: document.getElementById('propName')?.value || '',
-                propType: document.getElementById('propType')?.value || '',
-                propZone: document.getElementById('propZone')?.value || '',
-                occupancyMode: document.getElementById('occupancyMode')?.value || '',
-                
-                roomsTotal: document.getElementById('roomCount')?.value || 0,
-                roomsDetail: roomsTextFormatted, // <-- Texto hermoso
-                amenities: amenities,
-                
-                hasPool: document.getElementById('hasPool')?.value || '',
-                poolDimensions: document.getElementById('poolDimensions')?.value || '',
-                poolHours: document.getElementById('poolHours')?.value || '',
-                poolHasRestrictions: document.getElementById('poolHasRestrictions')?.value || '',
-                poolRestrictionsText: document.getElementById('poolRestrictionsText')?.value || '',
-                
-                hasSoundSystem: document.getElementById('hasSoundSystem')?.value || '',
-                guestSoundAllowed: document.getElementById('guestSoundAllowed')?.value || '',
-                musicAllowed: document.getElementById('musicAllowed')?.value || '',
-                musicConditionText: document.getElementById('musicConditionText')?.value || '',
-                
-                hasPets: document.getElementById('hasPets')?.value || '',
-                flexibility: document.getElementById('flexibility')?.value || '',
-                singleGroup: document.getElementById('singleGroup')?.value || '',
-                
-                maxCapacity: document.getElementById('maxCapacity')?.value || '',
-                minPrice: document.getElementById('minPrice')?.dataset.rawValue || '',
-                priceMode: document.getElementById('priceMode')?.value || '',
-                lowSeason: document.getElementById('lowSeason')?.dataset.rawValue || '',
-                midSeason: document.getElementById('midSeason')?.dataset.rawValue || '',
-                highSeason: document.getElementById('highSeason')?.dataset.rawValue || '',
-                extraPerson: document.getElementById('extraPerson')?.dataset.rawValue || '',
-                
-                depositType: document.getElementById('depositType')?.value || '',
-                depositPercent: document.getElementById('depositPercent')?.value || '',
-                depositFixed: document.getElementById('depositFixed')?.dataset.rawValue || '',
-
-                cancellationPolicy: document.getElementById('cancellationPolicy')?.value || '',
-                cancellationDays: document.getElementById('cancellationDays')?.value || '',
-                damageDeposit: document.getElementById('damageDeposit')?.value || '',
-                damageDepositAmount: document.getElementById('damageDepositAmount')?.dataset.rawValue || '',
-                penaltyPolicy: document.getElementById('penaltyPolicy')?.value || '',
-                paymentGateway: document.getElementById('paymentGateway')?.value || '',
-                extraServices: extraServicesText, // <-- Servicios con viñetas
-                
-                linkAirbnb: document.getElementById('linkAirbnb')?.value || '',
-                linkBooking: document.getElementById('linkBooking')?.value || '',
-                linkMaps: document.getElementById('linkMaps')?.value || '',
-                linkInstagram: document.getElementById('linkInstagram')?.value || '',
-                linkFacebook: document.getElementById('linkFacebook')?.value || '',
-                linkWhatsApp: document.getElementById('linkWhatsApp')?.value || '',
-                linkEmail: document.getElementById('linkEmail')?.value || '',
-                
-                timestamp: new Date().toISOString()
-            };
-
-            const submitBtnText = document.getElementById('submit-text');
-            btnSubmit.disabled = true;
-            submitBtnText.textContent = 'Enviando...';
-            btnSubmit.classList.add('opacity-70', 'cursor-wait');
-
-            // URL DE TU WEBHOOK (Intacta)
-            const WEBHOOK_URL = "https://restless-leaf-90bfapi-propiedades-notion.trespa-paginas.workers.dev/"; 
-
-            try {
-                if(WEBHOOK_URL === "") {
-                    console.log("DATOS FINALES:", formData);
-                    formStatus = 'submitted';
-                    autoSave();
-                    showSuccessScreen();
-                    
-                    submitBtnText.textContent = 'Enviar información';
-                    btnSubmit.disabled = false;
-                    btnSubmit.classList.remove('opacity-70', 'cursor-wait');
-                    return;
-                }
-
-                const response = await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
-                if(response.ok) {
-                    formStatus = 'submitted';
-                    autoSave();
-                    showSuccessScreen();
-                    window.scrollTo(0,0);
-                } else throw new Error("Rechazado");
-            } catch (error) {
-                console.error(error); alert("Error de conexión al enviar.");
-            } finally {
-                submitBtnText.textContent = 'Enviar información'; 
-                btnSubmit.disabled = false;
-                btnSubmit.classList.remove('opacity-70', 'cursor-wait');
-            }
-        });
-
-        // 8. INICIALIZACIÓN
-        const hasSavedData = autoLoad();
-        
-        if (!hasSavedData) {
-            syncRoomCards();
-            updateUI();
-        } else {
-            if(formStatus === 'submitted') {
-                showSuccessScreen();
-            } else {
-                updateUI();
-            }
-        }
-    </script>
+        <script src="js/state.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/form.js"></script>
 </body>
 </html>

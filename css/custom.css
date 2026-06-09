@@ -1,0 +1,38 @@
+body { font-family: 'Inter', sans-serif; }
+/* Animaciones CSS Nativas para reemplazar Framer Motion */
+.step-container {
+    display: none;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: all 0.3s ease-in-out;
+}
+.step-container.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+/* Estilos para inputs de error */
+.input-error { border-color: #ef4444 !important; }
+.hidden-element { display: none !important; }
+
+/* Efecto de Destello Premium para Botones */
+.btn-shine {
+    position: relative;
+    overflow: hidden;
+}
+.btn-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg);
+    animation: shine 3s infinite;
+}
+@keyframes shine {
+    0% { left: -100%; }
+    20% { left: 200%; }
+    100% { left: 200%; }
+}
