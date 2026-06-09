@@ -467,7 +467,7 @@ formElement?.addEventListener('submit', async (e) => {
             return;
         }
 
-        const response = await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+        const response = await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(formData) });
         if(response.ok) {
             formStatus = 'submitted';
             autoSave();
