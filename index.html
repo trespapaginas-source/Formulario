@@ -597,8 +597,10 @@
 
                 <div id="step-9" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
                     <div>
-                        <h2 class="text-xl font-semibold tracking-tight">Plataformas y contacto</h2>
-                        <p class="text-sm text-gray-500 leading-6 mt-1">Comparte los enlaces oficiales. Los datos de contacto son indispensables para poder registrar la propiedad.</p>
+                        <h2 class="text-xl font-semibold tracking-tight">Sincronización de disponibilidad</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">
+                            Ingresa los enlaces para sincronizar el calendario de disponibilidad de tu propiedad en la página web. Esto evitará de forma automática las reservas duplicadas entre plataformas.
+                        </p>
                     </div>
                     <div class="space-y-4">
                         <div>
@@ -611,23 +613,62 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-900">Enlace de Google Maps o ficha</label>
-                            <input type="url" id="linkMaps" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Pega aquí el enlace">
+                            <input type="url" id="linkMaps" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Pega aquí el enlace de ubicación">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900">Instagram</label>
-                            <input type="url" id="linkInstagram" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="https://instagram.com/tupropiedad">
+
+                        <!-- Switch de otras plataformas -->
+                        <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-2xl p-4 mt-4">
+                            <div class="space-y-1 pr-4">
+                                <span class="block text-sm font-medium text-gray-900">¿Tienes otra plataforma de reservas?</span>
+                                <span class="block text-xs text-gray-500">Si anuncias tu propiedad en sitios adicionales, agrégalos para sincronizar sus calendarios.</span>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer select-none">
+                                <input type="checkbox" id="hasOtherCalendars" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:outline-none peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FCBC07]"></div>
+                            </label>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900">Facebook</label>
-                            <input type="url" id="linkFacebook" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="https://facebook.com/tupropiedad">
+
+                        <!-- Contenedor de otras plataformas dinámicas -->
+                        <div id="other-calendars-container" class="hidden-element space-y-4 bg-gray-50 border border-gray-200 rounded-2xl p-4 mt-3">
+                            <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                                <h4 class="font-semibold text-gray-900 text-sm">Otras plataformas</h4>
+                                <button type="button" id="btn-add-other-calendar" class="px-4 py-2 bg-gray-950 text-white rounded-xl hover:bg-gray-800 text-xs font-medium transition-colors">+ Agregar plataforma</button>
+                            </div>
+                            <div id="other-calendars-list" class="space-y-3"></div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900">WhatsApp principal *</label>
-                            <input type="text" id="linkWhatsApp" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: +57 300 000 0000" required>
+                    </div>
+                </div>
+
+                <div id="step-10" class="step-container space-y-4 bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
+                    <div>
+                        <h2 class="text-xl font-semibold tracking-tight">Redes sociales y contacto</h2>
+                        <p class="text-sm text-gray-500 leading-6 mt-1">Comparte los enlaces oficiales. Los datos de contacto son indispensables para poder registrar la propiedad.</p>
+                    </div>
+                    <div class="space-y-5">
+                        <!-- Redes Sociales -->
+                        <div class="space-y-4">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 pb-2">Redes sociales</h3>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Instagram</label>
+                                <input type="url" id="linkInstagram" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="https://instagram.com/tupropiedad">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Facebook</label>
+                                <input type="url" id="linkFacebook" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="https://facebook.com/tupropiedad">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-900">Correo de reservas *</label>
-                            <input type="email" id="linkEmail" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: reservas@email.com" required>
+
+                        <!-- Datos de Contacto -->
+                        <div class="space-y-4 pt-2">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 pb-2">Datos de contacto</h3>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">WhatsApp principal *</label>
+                                <input type="text" id="linkWhatsApp" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: +57 300 000 0000" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900">Correo de reservas *</label>
+                                <input type="email" id="linkEmail" class="w-full mt-2 h-12 px-4 bg-white border border-gray-200 rounded-2xl text-gray-950 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-950" placeholder="Ej: reservas@email.com" required>
+                            </div>
                         </div>
                     </div>
                 </div>

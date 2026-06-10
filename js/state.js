@@ -57,3 +57,9 @@ const extraServicesContainer = document.getElementById('extraServicesContainer')
 const btnAddService = document.getElementById('btnAddService');
 const serviceInput = document.getElementById('serviceInput');
 const servicesList = document.getElementById('servicesList');
+
+// Otras plataformas y sincronización de calendario
+const hasOtherCalendarsSwitch = document.getElementById('hasOtherCalendars');
+const otherCalendarsContainer = document.getElementById('other-calendars-container');
+const otherCalendarsList = document.getElementById('other-calendars-list');
+const btnAddOtherCalendar = document.getElementById('btn-add-other-calendar');

@@ -221,6 +221,27 @@ function validateCurrentStep() {
         }
     }
 
+    // Validación específica para Sincronización de disponibilidad (step-9)
+    if (currentStepEl.id === 'step-9') {
+        const switchChecked = document.getElementById('hasOtherCalendars')?.checked;
+        if (switchChecked) {
+            const cards = document.querySelectorAll('.custom-calendar-link-card');
+            cards.forEach(card => {
+                const platformInput = card.querySelector('.custom-cal-platform');
+                const urlInput = card.querySelector('.custom-cal-url');
+                
+                [platformInput, urlInput].forEach(input => {
+                    if (input && !input.value.trim()) {
+                        input.classList.add('input-error');
+                        isValid = false;
+                    } else if (input) {
+                        input.classList.remove('input-error');
+                    }
+                });
+            });
+        }
+    }
+
     return isValid;
 }
 

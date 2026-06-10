@@ -30,6 +30,11 @@ function autoSave() {
     const servicesOffered = Array.from(document.querySelectorAll('.service-checkbox:checked')).map(cb => cb.value);
     const pasadiaIncludes = Array.from(document.querySelectorAll('.pasadia-include-checkbox:checked')).map(cb => cb.value);
 
+    const customCalendarsData = Array.from(document.querySelectorAll('.custom-calendar-link-card')).map(card => ({
+        platform: card.querySelector('.custom-cal-platform').value,
+        url: card.querySelector('.custom-cal-url').value
+    }));
+
     const dataToSave = {
         step: currentStep,
         status: formStatus,
@@ -43,7 +48,9 @@ function autoSave() {
         rooms: roomsData,
         alojRanges: getRangesData('aloj'),
         pasadiaRanges: getRangesData('pasadia'),
-        eventosRanges: getRangesData('eventos')
+        eventosRanges: getRangesData('eventos'),
+        hasOtherCalendars: hasOtherCalendarsSwitch ? hasOtherCalendarsSwitch.checked : false,
+        customCalendars: customCalendarsData
     };
 
     document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
@@ -81,6 +88,21 @@ function autoLoad() {
             data.customPasadia.forEach(val => {
                 if (typeof addCustomPasadiaCheckbox === 'function') {
                     addCustomPasadiaCheckbox(val, false);
+                }
+            });
+        }
+
+        // Restaurar switch de otras plataformas y sus filas
+        if (hasOtherCalendarsSwitch) {
+            hasOtherCalendarsSwitch.checked = data.hasOtherCalendars || false;
+            hasOtherCalendarsSwitch.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        if (data.customCalendars && data.customCalendars.length > 0) {
+            if (otherCalendarsList) otherCalendarsList.innerHTML = '';
+            data.customCalendars.forEach(cal => {
+                if (typeof addOtherCalendarRow === 'function') {
+                    addOtherCalendarRow(cal.platform, cal.url);
                 }
             });
         }
@@ -439,6 +461,11 @@ formElement?.addEventListener('submit', async (e) => {
         linkAirbnb: document.getElementById('linkAirbnb')?.value || '',
         linkBooking: document.getElementById('linkBooking')?.value || '',
         linkMaps: document.getElementById('linkMaps')?.value || '',
+        otherCalendars: Array.from(document.querySelectorAll('.custom-calendar-link-card')).map(card => {
+            const platform = card.querySelector('.custom-cal-platform').value.trim();
+            const url = card.querySelector('.custom-cal-url').value.trim();
+            return platform && url ? `${platform}: ${url}` : '';
+        }).filter(Boolean).join("\n") || 'Ninguno',
         linkInstagram: document.getElementById('linkInstagram')?.value || '',
         linkFacebook: document.getElementById('linkFacebook')?.value || '',
         linkWhatsApp: document.getElementById('linkWhatsApp')?.value || '',

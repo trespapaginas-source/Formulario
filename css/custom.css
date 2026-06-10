@@ -5,14 +5,14 @@
     --brand-yellow-light: #FFF9E6;
 }
 
-body { 
-    font-family: 'Inter', sans-serif; 
+body {
+    font-family: 'Inter', sans-serif;
 }
 
 /* Cabecera Premium de Marca */
 .brand-header-banner {
     background-color: var(--brand-yellow);
-    padding: 1.5rem 0;
+    padding: 0.9rem 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +20,8 @@ body {
 }
 
 .brand-header-banner img {
-    height: 5rem; /* 80px */
+    height: 8.5rem;
+    /* 104px */
     object-fit: contain;
 }
 
@@ -31,7 +32,8 @@ body {
     border-radius: 1.25rem;
     padding: 1.25rem;
     font-size: 0.875rem;
-    color: #4a3e1a; /* Contraste y legibilidad mejorados */
+    color: #4a3e1a;
+    /* Contraste y legibilidad mejorados */
     line-height: 1.6;
 }
 
@@ -42,6 +44,7 @@ body {
     transform: translateY(18px);
     transition: all 0.3s ease-in-out;
 }
+
 .step-container.active {
     display: block;
     opacity: 1;
@@ -49,8 +52,13 @@ body {
 }
 
 /* Estilos para inputs de error */
-.input-error { border-color: #ef4444 !important; }
-.hidden-element { display: none !important; }
+.input-error {
+    border-color: #ef4444 !important;
+}
+
+.hidden-element {
+    display: none !important;
+}
 
 /* Sobrescribir Clases de Color de Tailwind con la Identidad de Marca */
 .bg-gray-950 {
@@ -62,7 +70,9 @@ body {
 }
 
 /* Foco y Acento en Inputs con Amarillo Palacio */
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
     border-color: var(--brand-yellow) !important;
     --tw-ring-color: var(--brand-yellow) !important;
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000) !important;
@@ -77,7 +87,8 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Sobrescribir Checks dinámicos */
-input[type="checkbox"]:checked, input[type="radio"]:checked {
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
     accent-color: var(--brand-yellow) !important;
 }
 
@@ -91,6 +102,7 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     position: relative;
     overflow: hidden;
 }
+
 .btn-shine::after {
     content: '';
     position: absolute;
@@ -98,14 +110,23 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     left: -100%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
     transform: skewX(-25deg);
     animation: shine 3s infinite;
 }
+
 @keyframes shine {
-    0% { left: -100%; }
-    20% { left: 200%; }
-    100% { left: 200%; }
+    0% {
+        left: -100%;
+    }
+
+    20% {
+        left: 200%;
+    }
+
+    100% {
+        left: 200%;
+    }
 }
 
 /* Hover de botón interactivo */

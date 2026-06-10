@@ -62,6 +62,7 @@ function updateActiveSteps() {
     // Pasos finales
     activeSteps.push(document.getElementById('step-8'));
     activeSteps.push(document.getElementById('step-9'));
+    activeSteps.push(document.getElementById('step-10'));
 }
 
 function updateUI() {
@@ -486,4 +487,67 @@ window.removeService = function(index) {
     extraServicesArray.splice(index, 1);
     renderServices();
     if (typeof autoSave === 'function') autoSave();
+}
+
+// ==========================================
+// LÓGICA DE OTRAS PLATAFORMAS (Paso 9)
+// ==========================================
+if (hasOtherCalendarsSwitch) {
+    hasOtherCalendarsSwitch.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            otherCalendarsContainer.classList.remove('hidden-element');
+            if (otherCalendarsList.children.length === 0) {
+                addOtherCalendarRow();
+            }
+        } else {
+            otherCalendarsContainer.classList.add('hidden-element');
+            otherCalendarsList.innerHTML = '';
+        }
+        if (typeof autoSave === 'function') autoSave();
+    });
+}
+
+if (btnAddOtherCalendar) {
+    btnAddOtherCalendar.addEventListener('click', () => {
+        addOtherCalendarRow();
+        if (typeof autoSave === 'function') autoSave();
+    });
+}
+
+function addOtherCalendarRow(platformName = '', platformUrl = '') {
+    if (!otherCalendarsList) return;
+
+    const row = document.createElement('div');
+    row.className = "bg-white border border-gray-200 rounded-xl p-3 space-y-2 relative custom-calendar-link-card";
+    row.innerHTML = `
+        <div class="flex justify-between items-center">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Plataforma adicional</span>
+            <button type="button" class="text-red-500 hover:text-red-700 font-semibold text-xs btn-delete-custom-calendar">Eliminar</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+                <label class="block text-xs text-gray-500 font-medium">Nombre de la plataforma</label>
+                <input type="text" class="w-full mt-1 h-10 px-3 bg-white border border-gray-200 rounded-lg text-gray-950 text-sm focus:ring-2 focus:ring-gray-950 outline-none custom-cal-platform" placeholder="Ej: VRBO, Expedia, Agoda" value="${platformName}">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 font-medium">Enlace de sincronización / Reservas</label>
+                <input type="url" class="w-full mt-1 h-10 px-3 bg-white border border-gray-200 rounded-lg text-gray-950 text-sm focus:ring-2 focus:ring-gray-950 outline-none custom-cal-url" placeholder="https://..." value="${platformUrl}">
+            </div>
+        </div>
+    `;
+
+    // Event listener to delete the row
+    row.querySelector('.btn-delete-custom-calendar').addEventListener('click', () => {
+        otherCalendarsList.removeChild(row);
+        if (typeof autoSave === 'function') autoSave();
+    });
+
+    // Event listeners to trigger autosave on input changes in the new inputs
+    row.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', () => {
+            if (typeof autoSave === 'function') autoSave();
+        });
+    });
+
+    otherCalendarsList.appendChild(row);
 }
